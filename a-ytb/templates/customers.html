@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-eVEWOO7FZYd4zFo6fkozfgvhmX7IfAEMWft82WsECxiB0Fe3d20szueUYaBhpgXz9td9o0+RV3svN3nqFv5mZg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-eVEWOO7FZYd4zFo6fkozfgvhmX7IfAEMWft82WsECxiB0Fe3d20szueUYaBhpgXz9td9o0+RV3svN3nqFv5mZg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-eVEWOO7FZYd4zFo6fkozfgvhmX7IfAEMWft82WsECxiB0Fe3d20szueUYaBhpgXz9td9o0+RV3svN3nqFv5mZg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap:wrap;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            width: 30%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 100px;
+            margin: auto;
+        }
+
+        .chat-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 2px solid #3b5998;
+        }
+        .youtube-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 2px solid #3b5998;
+            margin-top:10px;
+        }
+        #showHideRelatedVideosButton{
+            background-color: #007bff;
+            color: #fff;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 2px solid #3b5998;
+            margin-top:10px;
+        }
+        .messages-container {
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #f0f2f5;
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 10px 15px;
+            border-radius: 8px;
+            width: fit-content;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+
+        .message.sent {
+            background-color: #007bff;
+            color: #fff;
+            align-self: flex-end;
+            font-size: 14px;
+        }
+
+        .message.received {
+            background-color: #f6f6f6;
+        }
+
+        .message-meta {
+            margin-top: 5px;
+            text-align: right;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .input-container {
+            display: flex;
+            background-color: #f0f2f5;
+            border-top: 2px solid #3b5998;
+            padding: 10px;
+        }
+
+        #message {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        #sendButton {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #sendButton:hover {
+            background-color: #0056b3;
+        }
+
+        .container2 {
+            margin-right:20px;
+            text-align: center;
+            width: 35%;
+            height:90vh;
+            border-radius: 20px;
+            box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            width: 60%;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .video-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            margin: auto;
+            height:60vh;
+            overflow-y: auto;
+        }
+        
+        .video {
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100px;
+            flex: 1 1 calc(80.333% - 40px); /* Adjust the width and gap as needed */
+            box-sizing: border-box; /* Ensures padding and border are included in the width */
+        }
+        
+        .video img {
+            width: 80%;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .video h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .video a {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        .video a:hover {
+            background-color: #0056b3;
+        }
+        
+        
+
+        #relatedVideos {
+            max-height: 77vh;
+            display: none;
+            overflow-y: auto;
+            justify-content: center;
+            gap: 20px;
+            margin: auto;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .video-item {
+            max-width: 300px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .video-thumbnail {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .video-title {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .video-description {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .watch-link {
+            display: block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .related {
+            border-radius: 8px;
+            box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
+            margin-right:55px;
+            display:flex;
+            flex-direction:column;
+            gap:20px;
+        }
+
+        .container3 {
+            margin: auto;
+            margin-top:80px;
+    
+        }
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+        }
+        .form-control-file {
+            overflow: hidden;
+        }
+
+        .container3 {
+            display: flex;
+            flex-direction: row; /* or column depending on your layout */
+            justify-content: space-between; /* or other values as needed */
+            align-items: stretch; /* or other values as needed */
+        }
+        
+        .container3 .row {
+            display: flex;
+            flex-wrap: wrap; /* adjust as needed */
+        }
+        
+        .container3 .col-md-10 {
+            width:500px;
+            flex: 1; /* adjust as needed */
+            margin: 0 5px; /* optional margin between columns */
+        }
+        
+        .container3 .card {
+            width: 100%; /* or adjust as needed */
+            /* Add other styles as needed */
+        }
+
+        .post {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 500px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .user {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-photo {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .user-name {
+            font-weight: bold;
+        }
+        
+        .post-content {
+            margin: 20px 0;
+        }
+        
+        .post-photo {
+            width: 100%;
+            border-radius: 8px;
+        }
+        
+        .comments-section {
+            margin-top: 20px;
+        }
+        
+        #commentForm {
+            display: flex;
+            align-items: center;
+        }
+        
+        #commentInput {
+            flex: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+        }
+        
+        #commentForm button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #1877f2;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        
+        .comment {
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .comment.positive {
+            background-color: #d4edda;
+        }
+        
+        .comment.negative {
+            background-color: #f8d7da;
+        }
+        
+        .comment-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .comment-actions button {
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .container{
+
+        }
+        .card-header {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .card-body {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .post {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centering items */
+        }
+        .profile-picture {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        .user-name {
+            font-weight: bold;
+            margin-bottom: 0;
+        }
+        .post-time {
+            color: #666;
+            margin-bottom: 0;
+        }
+        .post-content {
+            margin-bottom: 15px;
+            text-align: center; /* Centering content */
+        }
+        .comment {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f7f7f7;
+            position: relative;
+        }
+        .comment-forms textarea {
+            resize: none;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .file-upload {
+            background-color: #f7f7f7;
+            border: 1px dashed #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-upload:hover {
+            background-color: #eaeaea;
+        }
+        .product-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .product-card img {
+            width: 600px;
+            height:200px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .product-info {
+            margin-bottom: 20px;
+        }
+        .product-info h2 {
+            margin-bottom: 10px;
+        }
+        .product-info p {
+            margin-bottom: 20px;
+        }
+        .product-info button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .product-info button:hover {
+            background-color: #0056b3;
+        }
+        .reviews {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .star {
+            color: #f1c40f; /* Yellow color */
+        }
+        .star-rating {
+            display: inline-block;
+            unicode-bidi: bidi-override;
+            color: #f7b731;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .star-rating span {
+            padding: 0 1px;
+        }
+        .star-rating::before {
+            content: '★★★★★';
+            letter-spacing: 1px;
+        }
+        .star-rating::before {
+            content: '★★★★★';
+            letter-spacing: 1px;
+            position: absolute;
+            top: 0;
+            opacity: 0;
+        }
+        .star-rating span::before {
+            content: '★';
+            position: absolute;
+            opacity: 1;
+        }
+        .delete-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+        #sentimentResults{
+            display:flex;
+            justify-content:space-between;
+        }
+
+
+        .comment-forms {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+            margin: auto;
+        }
+        
+        .form-group, .star-icons {
+            width: 100%;
+        }
+        
+        .star-icons {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        
+        .star {
+            font-size: 24px;
+            margin: 0 5px;
+        }
+        
+        .form-control-file {
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+        }
+
+        .custom-file-label {
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            text-align: center;
+            width: 100%;
+        }
+        
+      
+    </style>
+</head>
+<body>
+ 
+    <div class="chat-container">
+        <div class="chat-header">Data Scientist Chat</div>
+        <div class="messages-container" id="messages"></div>
+        <div class="input-container">
+            <input id="message" autocomplete="off" placeholder="Type your message..." />
+            <button id="sendButton" onclick="sendMessage()">Send</button>
+        </div>
+        <div clss="databse" style="display:flex; gap:20px;">
+        <input type="hidden" id="videoUrl" value="">
+        <button id="exportBtn" style="display: none;">Download CSV</button>
+        <button id="viewButton" style="display: none;">View CSV</button>
+        </div>
+    </div>
+
+
+
+
+<div class="related">
+    <button id="showHideRelatedVideosButton" style="display: none;">Show/Hide Related Videos</button>
+    <div id="relatedVideos">
+        <!-- Related videos will be displayed here -->
+    </div>
+</div>
+
+    <div class="container2">
+        <div class="youtube-header">Youtube Search</div>
+        <input type="text" id="keyword" placeholder="Enter keyword">
+        <button onclick="searchVideos()">Search</button>
+        <div class="video-container" id="results"></div>
+        
+    </div>
+</div>
+
+   
+                    <form id="keywordForm" enctype="multipart/form-data" style="display:none">
+                       
+                        <div class="form-group">
+                            <label for="file">Upload CSV File:</label>
+                            <input type="file" class="form-control-file" id="file" name="file" hidden>
+
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+
+
+
+
+
+
+
+
+
+
+<div class="row mt-20" style="margin-top:50px;">
+<div class="col-md-8 mx-auto ">
+<div class="card">
+    <div class="card-header">
+        Reviews Analysis
+    </div>
+    <div class="card-body">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="product-card">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYJqRZF3Zddv9LnnMnhjlbYt2G6B6jKcT33Q&s" alt="Custom iPhone 16">
+                    <div class="product-info">
+                        <h2>Iphone 16</h2>
+                        <p>We expect the iPhone 16, iPhone 16 Plus, iPhone 16 Pro and iPhone 16 Pro Max to be among the best phones of 2024, and while we're still a few months away from the official launch of Apple's next handsets, that hasn't stopped the iPhone 16 rumors from arriving in earnest..</p>
+                        <h2>Price: $120</h2>
+                        <button>Buy Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form for Comment Analysis -->
+        <form id="commentForms" class="comment-forms" style="text-align:center; align-items:center;">
+            <div class="form-group">
+                <label for="comment">Enter Your Reviews:</label>
+                <textarea class="form-control" id="comments" rows="3" name="comment"></textarea>
+            </div>
+            <div class="star-icons">
+                <span class="star">&#9733;</span> <!-- Full star -->
+                <span class="star">&#9733;</span> <!-- Full star -->
+                <span class="star">&#9733;</span> <!-- Full star -->
+                <span class="star">&#9733;</span> <!-- Empty star -->
+                <span class="star">&#9733;</span> <!-- Empty star -->
+            </div>
+            <div class="form-group">
+                <input type="file" class="form-control-file" id="file" name="file">
+            </div>
+            <button type="submit" class="btn btn-primary">Review!</button>
+        </form>
+     
+        <div id="result" class="card mt-3">
+        
+            <div class="card-header" style="text-align:center;">
+                <h3>Reviews Analysis Results</h3>
+                <div id="sentimentResults">
+                    <!-- Display counters for positive and negative reviews -->
+                    <div id="positiveCounter"><strong>Positive Reviews:</strong> <span id="positiveCount">0</span></div>
+                    <div id="negativeCounter"><strong>Negative Reviews:</strong> <span id="negativeCount">0</span></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Results for comment analysis will be displayed here -->
+                <div id="commentContainer" class="comment-container"></div>
+                <div id="sentimentResult">
+                    <!-- Star icons for reviews -->
+                </div>
+            </div>
+        </div>
+    </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script type="text/javascript">
+        var socket = io();
+
+        socket.on('connect', function() {
+            socket.emit('join_room', { username: 'customer', room: 'customer_room' });
+        });
+
+        $(document).ready(function() {
+            // Handle form submission for comment analysis
+            var positiveCount = 0;
+            var negativeCount = 0;
+            $("#commentForms").submit(function(event) {
+                event.preventDefault();
+                var formData = new FormData(this);
+                var comment = $("#comments").val();
+                displayComment(comment);
+                // You can access the CSV file using formData.get('csv')
+                // Process the CSV data if necessary
+                $.ajax({
+                    type: "POST",
+                    url: "/upload_and_analyze",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        displayResul(response);
+                        // Clear the comment input field for new input
+                        $("#comments").val('');
+                        // Clear the CSV file input field
+                        $("#file").val('');
+                    }
+                });
+            });
+        
+            // Function to display entered comment
+            function displayComment(comments) {
+                var commentContainer = $("#commentContainer");
+                var commentHtml = `
+                    <div class='comment'>
+                        <span class='delete-icon'>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+  <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+</svg>
+</span>
+                        ${comments}
+                    </div>`;
+                commentContainer.prepend(commentHtml);
+            }
+
+            // Function to handle delete icon click
+          // Function to handle delete icon click
+$(document).on('click', '.delete-icon', function() {
+    var sentiment = $(this).parent('.comment').hasClass('bg-success') ? 'Positive' : 'Negative';
+    if (sentiment === "Positive") {
+        positiveCount--;
+        $("#positiveCount").text(positiveCount);
+    } else {
+        negativeCount--;
+        $("#negativeCount").text(negativeCount);
+    }
+    $(this).parent('.comment').remove();
+});
+
+        
+            // Function to display results
+          // Function to display results
+function displayResul(data) {
+    // Display the sentiment result
+    var sentimentResult = $("#sentimentResul");
+    sentimentResult.empty();
+    var sentimentHtml = "<div><strong>Sentiment:</strong> " + data.sentiment + "</div>";
+    sentimentResult.append(sentimentHtml);
+    // Update background color of comments based on sentiment
+    var commentClass = data.sentiment === "Positive" ? "bg-success" : "bg-danger";
+    $("#commentContainer .comment:first-child").addClass(commentClass);
+
+    // Update counters
+    if (data.sentiment === "Positive") {
+        positiveCount++;
+        $("#positiveCount").text(positiveCount);
+    } else {
+        negativeCount++;
+        $("#negativeCount").text(negativeCount);
+    }
+}
+        });
+        
+
+        
+        socket.on('show_related_videos_button', function() {
+            document.getElementById('showHideRelatedVideosButton').style.display = 'block';
+        });
+        // Button to show/hide related videos
+        document.getElementById('showHideRelatedVideosButton').addEventListener('click', function() {
+            var relatedVideosDiv = document.getElementById('relatedVideos');
+            if (relatedVideosDiv.style.display === 'none') {
+                relatedVideosDiv.style.display = 'flex';
+                socket.emit('request_related_videos');
+            } else {
+                relatedVideosDiv.style.display = 'none';
+            }
+        });
+
+        // Socket event to receive and display related videos
+        socket.on('related_videos', function(data) {
+            displayRelatedVideos(data.videos);
+        });
+
+        // Function to display related videos
+        function displayRelatedVideos(videos) {
+            const container = document.getElementById('relatedVideos');
+            container.innerHTML = ''; // Clear existing content
+
+            videos.forEach(video => {
+                const videoItem = document.createElement('div');
+                videoItem.classList.add('video-item');
+
+                const thumbnail = document.createElement('img');
+                thumbnail.classList.add('video-thumbnail');
+                thumbnail.src = video.thumbnail;
+                videoItem.appendChild(thumbnail);
+
+                const title = document.createElement('h4');
+                title.classList.add('video-title');
+                title.textContent = video.title;
+                videoItem.appendChild(title);
+
+                const description = document.createElement('p');
+                description.classList.add('video-description');
+                description.textContent = video.description;
+                videoItem.appendChild(description);
+
+                const link = document.createElement('a');
+                link.classList.add('watch-link');
+                link.href = 'https://www.youtube.com/watch?v=' + video.videoId; // Construct the YouTube video URL
+                link.textContent = 'Watch';
+                videoItem.appendChild(link);
+
+                container.appendChild(videoItem);
+            });
+        }
+   
+
+  
+        socket.on('show_export_button', function(data) {
+            document.getElementById('videoUrl').value = data.videoUrl;
+            document.getElementById('exportBtn').style.display = 'block';
+
+            document.getElementById('viewButton').style.display = 'block';
+            document.getElementById('viewButton').onclick = function() {
+                // Fetch the CSV content via Fetch API
+                fetch(`/export?videoUrl=${data.videoUrl}`)
+                    .then(response => response.text())
+                    .then(csvData => {
+                        // Parse CSV data using PapaParse
+                        var parsedData = Papa.parse(csvData, { header: true });
+                        
+                        // Create a table element
+                        var table = '<table>';
+                        
+                        // Add header row
+                        table += '<thead><tr>';
+                        for (var key in parsedData.data[0]) {
+                            table += '<th>' + key + '</th>';
+                        }
+                        table += '</tr></thead>';
+            
+                        // Add data rows
+                        table += '<tbody>';
+                        parsedData.data.forEach(row => {
+                            table += '<tr>';
+                            for (var key in row) {
+                                table += '<td>' + row[key] + '</td>';
+                            }
+                            table += '</tr>';
+                        });
+                        table += '</tbody></table>';
+            
+                        // Open a new tab with the table
+                        var newWindow = window.open();
+                        newWindow.document.write(table);
+                    })
+                    .catch(error => console.error('Error fetching CSV data:', error));
+            };
+        });
+
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            var videoUrl = document.getElementById('videoUrl').value;
+            window.location.href = `/export?videoUrl=${videoUrl}`;
+        });
+        
+       
+          
+        socket.on('receive_message', function(data) {
+            var messages = document.getElementById('messages');
+            var messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            if (data.username === 'customer') {
+                messageElement.classList.add('sent');
+            } else {
+                messageElement.classList.add('received');
+            }
+            var messageContent = document.createElement('div');
+            messageContent.textContent = data.message;
+            messageElement.appendChild(messageContent);
+            var messageMeta = document.createElement('div');
+            messageMeta.classList.add('message-meta');
+            messageMeta.textContent = data.username === 'customer' ? 'You' : data.username;
+            messageElement.appendChild(messageMeta);
+            messages.appendChild(messageElement);
+            messages.scrollTop = messages.scrollHeight;
+        });
+
+        function sendMessage() {
+            var message = document.getElementById('message').value;
+            if (message.trim() !== '') {
+                socket.emit('send_message', { username: 'customer', message: message });
+                document.getElementById('message').value = '';
+            }
+        }
+
+       
+        function searchVideos() {
+            var keyword = document.getElementById('keyword').value.trim();
+            if (keyword === '') {
+                alert('Please enter a keyword');
+                return;
+            }
+
+            // Your YouTube Data API key
+            var apiKey = 'AIzaSyC_2R_l595WcYINW7vHSwGJnp3PBb087CU';
+
+            var url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${keyword}&key=${apiKey}&maxResults=10`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    displayResults(data.items);
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function displayResults(videos) {
+            var resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = '';
+
+            videos.forEach(video => {
+                var videoId = video.id.videoId;
+                var title = video.snippet.title;
+                var thumbnail = video.snippet.thumbnails.default.url;
+
+                var videoElement = document.createElement('div');
+                videoElement.classList.add('video');
+
+                var thumbnailElement = document.createElement('img');
+                thumbnailElement.src = thumbnail;
+
+                var titleElement = document.createElement('h3');
+                titleElement.textContent = title;
+
+                var linkElement = document.createElement('a');
+                linkElement.href = `https://www.youtube.com/watch?v=${videoId}`;
+                linkElement.target = '_blank';
+                linkElement.textContent = 'Watch Video';
+
+                videoElement.appendChild(thumbnailElement);
+                videoElement.appendChild(titleElement);
+                videoElement.appendChild(linkElement);
+
+                resultsContainer.appendChild(videoElement);
+            });
+        }
+        // Add event listeners for "Enter" key press
+document.getElementById("message").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        sendMessage();
+    }
+});
+
+document.getElementById("keyword").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        searchVideos();
+    }
+});
+        // Handle CSV data received from the server
+        socket.on('csv_data_received', function(data) {
+            var messages = document.getElementById('messages');
+            var csvData = data.csv_data.split('\n'); // Split CSV data by newline to get individual rows
+            csvData.forEach(function(row) {
+                var messageElement = document.createElement('div');
+                messageElement.classList.add('message', 'received');
+                messageElement.textContent = row;
+                messages.appendChild(messageElement);
+            });
+            messages.scrollTop = messages.scrollHeight;
+        });
+
+
+            // Handle form submission for keyword analysis
+            $(document).ready(function() {
+                $("#keywordForm").submit(function(event) {
+                    event.preventDefault();
+                    var formData = new FormData(this);
+                    $.ajax({
+                        type: "POST",
+                        url: "/analyzetopic",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            displayOutput(response);
+                        }
+                    });
+                });
+            });
+        
+            // Function to display output
+            function displayOutput(data) {
+                var outputDiv = $("#output .card-body");
+                outputDiv.empty();
+                if (data.error) {
+                    outputDiv.append("<p>" + data.error + "</p>");
+                } else {
+                    outputDiv.append("<h5 class='text-success'>Positive Comments Main Ideas:</h5>");
+                    data.positiveComments.forEach(function(comment) {
+                        outputDiv.append("<p class='text-success'>" + comment + "</p>");
+                    });
+                    outputDiv.append("<h5 class='text-danger'>Negative Comments Main Ideas:</h5>");
+                    data.negativeComments.forEach(function(comment) {
+                        outputDiv.append("<p class='text-danger'>" + comment + "</p>");
+                    });
+                    outputDiv.append("<h5>Recommendation:</h5>");
+                    outputDiv.append("<p>" + data.recommendation + "</p>");
+                }
+            }
+        
+            // Handle form submission for comment analysis
+            $(document).ready(function() {
+                $("#commentForm").submit(function(event) {
+                    event.preventDefault();
+                    var formData = $(this).serialize();
+                    $.ajax({
+                        type: "POST",
+                        url: "/upload_and_analyze",
+                        data: formData,
+                        success: function(response) {
+                            displayResult(response);
+                        }
+                    });
+                });
+            });
+        
+            // Function to display results
+            function displayResult(data) {
+                var resultsDiv = $("#result .card-body");
+                resultsDiv.empty();
+                resultsDiv.append("<p><strong>Sentiment:</strong> " + data.sentiment + "</p>");
+            }
+    </script>
+</body>
+</html>

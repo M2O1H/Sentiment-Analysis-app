@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operator Chat and YouTube Sentiment Analysis</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <style>
+        .video-info { 
+            text-align: center;
+            align-item:center;
+            display:inline-block;
+
+            margin-:30px;
+
+        }        
+        .video-info h3 {
+            font-size: 24px;
+            text-align:center;
+            align-item:center
+
+        }
+        
+        .video-info p {
+            font-size: 16px;
+            text-align:center;
+            align-item:center
+        }
+        
+        .chat-container {
+            width: 25%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            /* Set a fixed height for the chat container */
+            height: 90vh;
+        }
+        
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #f0f2f5;
+        }
+
+        .chat-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 2px solid #3b5998;
+        }
+
+      
+
+
+        .message {
+            margin: 10px 0;
+            padding: 20px 25px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            word-wrap: break-word;
+        }
+
+        .message.sent {
+            background-color: #007bff;
+            color: #fff;
+            font-size:30px;
+            align-self: flex-end;
+        }
+
+        .message.sent .message-meta {
+            display: none;
+        }
+
+        .message.received {
+            background-color: #f6f6f6;
+            font-size: 18px;
+
+        }
+
+        .message.received .message-meta {
+            margin-left: 10px;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .message-meta {
+            margin-top: 5px;
+            text-align: right;
+            font-size: 30px;
+            color: #888;
+        }
+
+        .input-container {
+            display: flex;
+            background-color: #f9f9f9;
+            border-top: 2px solid #3b5998;
+            padding: 10px;
+        }
+
+        #message {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            resize: none;
+            margin-right: 10px;
+        }
+
+        #sendButton {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4267b2;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #sendButton:hover {
+            background-color: #3a5a9a;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            width: 65%;
+            max-width: 1300px;
+            margin: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            height: 83vh;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            font-weight: bold;
+            font-size: 30px;
+        }
+        form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 400px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #chart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        #chart canvas {
+        }
+        .info-box {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .info-box label {
+            font-weight: bold;
+        }
+        .hidden {
+            display: none;
+        }
+        .column h3 {
+            text-align: center;
+        }
+        .comment-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        .comment {
+            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            position: relative;
+            word-wrap: break-word;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .positive {
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+        }
+        .negative {
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
+        .emoji {
+            font-size: 1.5em;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            input[type="text"] {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+        .export {
+            display:flex;
+            justify-content: space-evenly;
+        }
+        .related-videos {
+            margin-top: 20px;
+        }
+        .related-videos h3 {
+            text-align: center;
+        }
+        .video-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .video-item {
+            width: 30%;
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+        .video-item img {
+            width: 100%;
+        }
+        .video-item h4 {
+            margin: 10px;
+            font-size: 16px;
+        }
+        .video-item p {
+            margin: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+        .video-item a {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+        .video-item a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Operator Chat Section -->
+    <div class="chat-container">
+        <div class="chat-header">Data Scientist Chat</div>
+        <div class="messages-container" id="messages"></div>
+        <div class="input-container">
+            <input id="message" autocomplete="off" placeholder="Type your message..." />
+            <button id="sendButton" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- YouTube Sentiment Analysis Section -->
+    <div class="container">
+        <h2>YouTube Comments Sentiment Analysis</h2>
+        <form id="urlForm">
+            <input type="text" id="videoUrl" placeholder="Enter YouTube Video URL">
+            <button type="submit">Analyze</button>
+        </form>
+        <div id="chart">
+            <div class="video-info" id="videoInfo">
+                <!-- Video title and likes count will be displayed here -->
+            </div>
+            <div class="info-box hidden" id="totalCommentsLine">
+                <label>Total Comments:</label>
+                <span id="totalComments">-</span>
+            </div>
+            <div class="info-box hidden" id="positiveCommentsLine">
+                <label>Positive Comments:</label>
+                <span id="positiveComments">-</span>
+            </div>
+            <div class="info-box hidden" id="negativeCommentsLine">
+                <label>Negative Comments:</label>
+                <span id="negativeComments">-</span>
+            </div>
+            <div class="info-box hidden" id="neutralCommentsLine">
+                <label>Neutral Comments:</label>
+                <span id="neutralComments">-</span>
+            </div>
+            <canvas id="sentimentChart" width="1000" height="250"></canvas>
+        </div>
+        <div class="column">
+            <h3>Top 20 Comments</h3>
+            <div id="comments" class="comment-section">
+                <!-- Comments will be displayed here -->
+            </div>
+        </div> 
+     
+
+
+        <div class="export">
+            <button id="sendDatabaseButton">Send Database(CSV) to Customer</button>
+            <button id="sendRelatedVideosButton">Send Recommendation Videos to Customer</button>
+            <button id="exportBtn">Download CSV</button>
+        </div>
+        <div class="related-videos">
+            <div class="video-list" id="relatedVideos" style="display:none;">
+                <!-- Related videos will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var socket = io();
+
+        socket.on('connect', function() {
+            socket.emit('join_room', { username: 'operator', room: 'customer_room'});
+        });
+   
+        document.getElementById("sendRelatedVideosButton").addEventListener("click", function() {
+            // Send message to the server to show related videos button
+            socket.emit('send_related_videos');
+        });
+        socket.on('receive_message', function(data) {
+            var messages = document.getElementById('messages');
+            var messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            if (data.username === 'operator') {
+                messageElement.classList.add('sent');
+            } else {
+                messageElement.classList.add('received');
+            }
+            var messageContent = document.createElement('div');
+            messageContent.textContent = data.message;
+            messageElement.appendChild(messageContent);
+            var messageMeta = document.createElement('div');
+            messageMeta.classList.add('message-meta');
+            messageMeta.textContent = data.username === 'operator' ? 'You' : data.username;
+            messageElement.appendChild(messageMeta);
+            messages.appendChild(messageElement);
+            messages.scrollTop = messages.scrollHeight;
+        });
+
+        function sendMessage() {
+            var message = document.getElementById('message').value;
+            if (message.trim() !== '') {
+                socket.emit('send_message', { username: 'operator', message: message });
+                document.getElementById('message').value = '';
+            }
+        }
+
+        document.getElementById("message").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+       // Function to fetch sentiment data and video information
+       function fetchSentimentData(videoUrl) {
+        fetch(`/analyze?videoUrl=${videoUrl}`)
+            .then(response => response.json())
+            .then(data => {
+                displayVideoInfo(data);
+                displayChart(data);
+                displayInfo(data);
+                displayComments(data);
+                displayRelatedVideos(data.relatedVideos);
+                showLines();
+            })
+            .catch(error => console.error('Error fetching sentiment data:', error));
+    }
+    
+    
+// Function to display video information
+
+function displayVideoInfo(data) {
+    const videoInfo = document.getElementById('videoInfo');
+    videoInfo.innerHTML = `<p><strong>Title:</strong> ${data.videoTitle}</p>`;
+}
+
+
+        // Function to display comments
+        function displayComments(data) {
+            const container = document.getElementById('comments');
+            container.innerHTML = ''; // Clear existing content
+    
+            const comments = [...data.positiveComments, ...data.negativeComments];
+            comments.sort(() => Math.random() - 0.5); // Shuffle comments
+    
+            comments.forEach(comment => {
+                const commentElement = document.createElement('div');
+                commentElement.classList.add('comment', comment.compound > 0 ? 'positive' : 'negative');
+                commentElement.innerHTML = `${comment.text} <span class="emoji">${comment.compound > 0 ? '😊' : '😞'}</span>`;
+                container.appendChild(commentElement);
+            });
+        }
+    
+        // Function to display chart
+        function displayChart(data) {
+            var labels = ['Positive', 'Negative', 'Neutral'];
+            var chartData = [data.positiveCount, data.negativeCount, data.neutralCount];
+            var ctx = document.getElementById('sentimentChart').getContext('2d');
+            var sentimentChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Sentiment Analysis',
+                        data: chartData,
+                        backgroundColor: ['#4CAF50', '#FF5252', '#FFC107']
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+    
+        // Function to display info
+        function displayInfo(data) {
+            document.getElementById('totalComments').textContent = data.positiveCount + data.negativeCount + data.neutralCount;
+            document.getElementById('positiveComments').textContent = data.positiveCount;
+            document.getElementById('negativeComments').textContent = data.negativeCount;
+            document.getElementById('neutralComments').textContent = data.neutralCount;
+        }
+    
+        // Function to show info lines
+        function showLines() {
+            document.getElementById('totalCommentsLine').classList.remove('hidden');
+            document.getElementById('positiveCommentsLine').classList.remove('hidden');
+            document.getElementById('negativeCommentsLine').classList.remove('hidden');
+            document.getElementById('neutralCommentsLine').classList.remove('hidden');
+        }
+    
+        // Function to display related videos
+        
+        function displayRelatedVideos(videos) {
+            const container = document.getElementById('relatedVideos');
+            container.innerHTML = ''; // Clear existing content
+    
+            videos.forEach(video => {
+                const videoItem = document.createElement('div');
+                videoItem.classList.add('video-item');
+    
+                const thumbnail = document.createElement('img');
+                thumbnail.src = video.thumbnail;
+                videoItem.appendChild(thumbnail);
+    
+                const title = document.createElement('h4');
+                title.textContent = video.title;
+                videoItem.appendChild(title);
+    
+                const description = document.createElement('p');
+                description.textContent = video.description;
+                videoItem.appendChild(description);
+    
+                const link = document.createElement('a');
+                link.href = video.url;
+                link.textContent = 'Watch';
+                videoItem.appendChild(link);
+    
+                container.appendChild(videoItem);
+            });
+        }
+    
+        // Handle form submission
+        document.getElementById('urlForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var videoUrl = document.getElementById('videoUrl').value;
+            fetchSentimentData(videoUrl);
+        });
+        // Handle CSV export
+        document.getElementById('sendDatabaseButton').onclick = function() {
+            var videoUrl = document.getElementById('videoUrl').value;
+            socket.emit('send_database', { 'videoUrl': videoUrl });
+        }
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            var videoUrl = document.getElementById('videoUrl').value;
+            window.location.href = `/export?videoUrl=${videoUrl}`;
+        });
+    </script>
+    
